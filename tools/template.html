@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tulu Transliterator: AccTantra, IAST, Devanagari, Kannada, Malayalam</title>
+<meta name="description" content="Convert Tulu text between AccTantra (the Mallige font encoding) and IAST, Devanagari, Kannada or Malayalam, in both directions. Free, by Prahlad Prasad Tantry.">
+<meta name="author" content="Prahlad Prasad Tantry">
+<meta name="color-scheme" content="light dark">
+<link rel="canonical" href="https://tantrytulufonts.github.io/tulu-transliterator/">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Tantry Tulu Font Foundry">
+<meta property="og:title" content="Tulu Transliterator: AccTantra, IAST, Devanagari, Kannada, Malayalam">
+<meta property="og:description" content="Convert Tulu text between AccTantra (the Mallige font encoding) and IAST, Devanagari, Kannada or Malayalam, in both directions.">
+<meta property="og:url" content="https://tantrytulufonts.github.io/tulu-transliterator/">
+<meta property="og:image" content="https://tantrytulufonts.github.io/tulu-transliterator/og-image.png">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Tulu Transliterator","url":"https://tantrytulufonts.github.io/tulu-transliterator/","description":"Converts Tulu text between AccTantra (the Mallige font encoding) and IAST, Devanagari, Kannada and Malayalam.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any (web browser)","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Prahlad Prasad Tantry","url":"https://tantrytulufonts.github.io/about/"},"publisher":{"@type":"Organization","name":"Tantry Tulu Font Foundry","url":"https://tantrytulufonts.github.io/"}}</script>
+<script>try{var t=localStorage.getItem('tt-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+<style>
+@font-face{font-family:'Mallige';src:url('tulu.ttf') format('truetype');font-weight:normal;font-style:normal;font-display:swap}
+:root{
+  --bg:#fbf7ef;--surface:#ffffff;--surface-2:#f4ecdc;--ink:#1d1a16;--muted:#6b6254;--line:#e2d9c6;
+  --accent:#7a4b1e;--accent-ink:#ffffff;--gold:#c8993a;--chip:#efe7d6;--ok:#1a7f4b;--shadow:0 1px 2px rgba(29,26,22,.06),0 8px 24px rgba(29,26,22,.07);
+  --serif:'Iowan Old Style','Palatino Linotype',Palatino,Georgia,'Times New Roman',serif;
+  --sans:system-ui,-apple-system,'Segoe UI',Roboto,'Noto Sans',sans-serif;
+  --mono:ui-monospace,'Cascadia Code','SF Mono',Consolas,'Liberation Mono',monospace;
+  --radius:14px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#14100c;--surface:#1d1712;--surface-2:#251d16;--ink:#f0e4cd;--muted:#a8997f;--line:#372b1e;
+  --accent:#e7be6e;--accent-ink:#1d1a16;--chip:#2c2218;--ok:#4cc38a;--shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35)}}
+:root[data-theme=dark]{
+  --bg:#14100c;--surface:#1d1712;--surface-2:#251d16;--ink:#f0e4cd;--muted:#a8997f;--line:#372b1e;
+  --accent:#e7be6e;--accent-ink:#1d1a16;--chip:#2c2218;--ok:#4cc38a;--shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:6px}
+.skip{position:absolute;left:-999px;top:8px;background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:8px;z-index:20}.skip:focus{left:8px}
+
+/* top bar */
+.bar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px clamp(16px,4vw,40px);background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
+.brand{display:flex;align-items:center;gap:10px;color:var(--ink);text-decoration:none;font-weight:700;font-size:15px}
+.brand img{width:32px;height:32px;border-radius:50%}
+.bar nav{display:flex;align-items:center;gap:6px 18px;flex-wrap:wrap;font-size:14px}
+.bar nav a{color:var(--muted);text-decoration:none}.bar nav a:hover{color:var(--ink)}
+.icon-btn{border:1px solid var(--line);background:transparent;color:var(--ink);width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:16px;line-height:1}
+.icon-btn:hover{background:var(--chip)}
+
+/* hero */
+.hero{max-width:1100px;margin:0 auto;padding:clamp(28px,6vw,56px) clamp(16px,4vw,40px) 8px}
+.eyebrow{margin:0 0 8px;text-transform:uppercase;letter-spacing:.16em;font-size:12px;color:var(--muted)}
+h1{font:600 clamp(32px,6vw,52px)/1.1 var(--serif);margin:0 0 12px;letter-spacing:-.01em}
+.lead{font-size:clamp(16px,2.2vw,19px);color:var(--muted);max-width:720px;margin:0}
+
+/* tool */
+main{max-width:1100px;margin:0 auto;padding:0 clamp(16px,4vw,40px) 60px}
+.tool{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:clamp(14px,2.5vw,24px);margin-top:22px}
+.modebar{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;margin-bottom:16px}
+.modebar .lbl{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:var(--surface-2);color:var(--ink);padding:7px 14px;border-radius:999px;cursor:pointer;font:500 14px var(--sans)}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-checked=true]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.direction{margin-left:auto;display:flex;align-items:center;gap:10px;font:600 15px var(--serif)}
+.swap{border:1px solid var(--line);background:var(--surface-2);color:var(--ink);padding:7px 14px;border-radius:999px;cursor:pointer;font:500 14px var(--sans)}
+.swap:hover{border-color:var(--accent)}
+
+.editor{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.editor{grid-template-columns:1fr}.direction{margin-left:0;width:100%}}
+.panel{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;background:var(--bg);overflow:hidden;min-height:240px}
+.panel:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 35%,transparent)}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.panel-head .t{font-weight:600;font-size:14px}.panel-head .s{display:block;font-weight:400;color:var(--muted);font-size:12px}
+.tools{display:flex;gap:6px}
+.btn-sm{border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:5px 12px;border-radius:8px;cursor:pointer;font:500 13px var(--sans)}
+.btn-sm:hover{border-color:var(--accent)}.btn-sm.ok{background:var(--ok);border-color:var(--ok);color:#fff}
+textarea,.out{flex:1;width:100%;border:0;background:transparent;color:var(--ink);padding:14px;font:400 20px/1.7 var(--sans);resize:vertical;min-height:170px;outline:0;overflow:auto;white-space:pre-wrap;word-break:break-word}
+.out.large-script{font-size:26px}
+.tulu-font{font-family:'Mallige',var(--sans)!important;font-size:30px!important;line-height:1.5!important}
+textarea::placeholder{color:var(--muted);opacity:.5}
+.count{padding:6px 14px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);text-align:right}
+
+
+details.options{margin-top:16px;border-top:1px solid var(--line);padding-top:12px}
+details.options summary{cursor:pointer;font-weight:600;font-size:14px;color:var(--muted);list-style:none}
+details.options summary::-webkit-details-marker{display:none}
+details.options summary::before{content:'▸ ';color:var(--accent)}details.options[open] summary::before{content:'▾ '}
+.switches{display:grid;gap:12px;margin-top:12px}
+.switch{display:flex;gap:12px;align-items:flex-start;cursor:pointer}
+.switch input{position:absolute;opacity:0}
+.switch .track{flex:0 0 40px;height:22px;border-radius:999px;background:var(--line);position:relative;transition:background .15s;margin-top:2px}
+.switch .track::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .15s;box-shadow:0 1px 2px rgba(0,0,0,.3)}
+.switch input:checked+.track{background:var(--accent)}.switch input:checked+.track::after{transform:translateX(18px)}
+.switch input:focus-visible+.track{outline:3px solid var(--gold);outline-offset:2px}
+.switch .txt{font-size:14px;line-height:1.45}.switch .txt small{display:block;color:var(--muted)}
+
+/* reference */
+.ref-head{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px;margin:44px 0 14px}
+.ref-head h2{font:600 28px var(--serif);margin:0}
+.search{border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:9px 14px;border-radius:999px;min-width:min(100%,260px);font:400 15px var(--sans)}
+.ref-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,310px),1fr));gap:16px}
+.ref-card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow);min-width:0;overflow-x:auto}
+.ref-card h4{margin:0 0 8px;font:600 16px var(--serif);color:var(--accent)}
+.ref-table{width:100%;border-collapse:collapse;font-size:14px}
+.ref-table td{padding:5px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+.ref-table tr:last-child td{border-bottom:0}
+.ref-table td:first-child{font-family:var(--mono);color:var(--accent);white-space:nowrap}
+.ref-table td.g{font-family:'Mallige',var(--sans);font-size:24px;line-height:1.2;white-space:nowrap}
+.ref-table td:nth-child(3){white-space:nowrap}
+.ref-table td:last-child{color:var(--muted);font-size:13px}
+.hidden{display:none!important}
+.empty{color:var(--muted);padding:20px 0}
+
+footer{border-top:1px solid var(--line);background:var(--surface);padding:28px clamp(16px,4vw,40px);text-align:center;color:var(--muted);font-size:14px}
+footer p{margin:6px 0}footer a{color:var(--accent)}
+@media (max-width:520px){.brand span{display:none}.bar{padding:10px 14px}.ref-table td.g{font-size:20px}.ref-table td:first-child{white-space:normal;word-break:break-all}.ref-table td:nth-child(3){white-space:normal}.tulu-font{font-size:26px!important}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#tool">Skip to the tool</a>
+<header class="bar">
+  <a class="brand" href="https://tantrytulufonts.github.io/"><img src="favicon-32.png" alt="" width="32" height="32"><span>Tantry Tulu Font Foundry</span></a>
+  <nav aria-label="Site">
+    <a href="https://tantrytulufonts.github.io/tulu-varnamruta/">The book</a>
+    <a href="https://tantrytulufonts.github.io/tulu-script-standard/">The standard</a>
+    <a href="https://tantrytulufonts.github.io/acctantra/">AccTantra</a>
+    <a href="https://tantrytulufonts.github.io/fonts/">Fonts</a>
+    <button class="icon-btn" id="themeBtn" type="button" aria-label="Switch between light and dark theme" title="Light / dark">◐</button>
+  </nav>
+</header>
+
+<section class="hero">
+  <p class="eyebrow">Tuḷu script tool</p>
+  <h1>Tuḷu Transliterator</h1>
+  <p class="lead">Convert Tuḷu text between <strong>AccTantra</strong> (the Mallige font encoding) and <strong>IAST</strong>, <strong>Devanāgarī</strong>, <strong>Kannaḍa</strong> or <strong>Malayāḷam</strong>, in both directions.</p>
+</section>
+
+<main id="main">
+  <section class="tool" id="tool" aria-label="Transliterator">
+    <div class="modebar">
+      <span class="lbl" id="scriptLbl">AccTantra and</span>
+      <div class="chips" role="radiogroup" aria-labelledby="scriptLbl" id="scriptChips">
+        <button type="button" class="chip" role="radio" aria-checked="true"  data-script="iast">IAST</button>
+        <button type="button" class="chip" role="radio" aria-checked="false" data-script="deva">Devanāgarī</button>
+        <button type="button" class="chip" role="radio" aria-checked="false" data-script="kan">Kannaḍa</button>
+        <button type="button" class="chip" role="radio" aria-checked="false" data-script="mal">Malayāḷam</button>
+      </div>
+      <div class="direction" aria-live="polite"><span id="dirText">AccTantra → IAST</span><button type="button" class="swap" id="swapBtn" title="Swap direction and carry the result across">⇄ Swap</button></div>
+    </div>
+
+    <div class="editor">
+      <div class="panel">
+        <div class="panel-head">
+          <span class="t"><span id="inputLabel">Input</span><span class="s" id="inputScript"></span></span>
+          <span class="tools"><button type="button" class="btn-sm" id="clearBtn">Clear</button></span>
+        </div>
+        <textarea id="inputText" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" aria-label="Input text"></textarea>
+        <div class="count" id="inputCount">0 characters</div>
+      </div>
+      <div class="panel">
+        <div class="panel-head">
+          <span class="t"><span id="outputLabel">Output</span><span class="s" id="outputScript"></span></span>
+          <span class="tools"><button type="button" class="btn-sm" id="shareBtn" title="Copy a link to this conversion">Share link</button><button type="button" class="btn-sm" id="copyBtn">Copy</button></span>
+        </div>
+        <div class="out" id="outputText" contenteditable="true" spellcheck="false" role="textbox" aria-multiline="true" aria-live="polite" aria-label="Converted text"></div>
+        <div class="count" id="outputCount">0 characters</div>
+      </div>
+    </div>
+
+    <details class="options">
+      <summary>Options</summary>
+      <div class="switches">
+        <label class="switch"><input type="checkbox" id="fontCheck" checked><span class="track"></span><span class="txt">Show AccTantra text in the Mallige font<small>Makes the encoded text readable as Tuḷu script.</small></span></label>
+        <label class="switch"><input type="checkbox" id="zwnjCheck"><span class="track"></span><span class="txt">Preserve non-joining virāmas<small>X becomes virāma plus ZWNJ when converting to Devanāgarī, Kannaḍa or Malayāḷam.</small></span></label>
+        <label class="switch"><input type="checkbox" id="nasalCheck"><span class="track"></span><span class="txt">Keep anusvāra as ṃ<small>Disables pañcama-parasavarṇa, so ṃ is not turned into the class nasal.</small></span></label>
+      </div>
+    </details>
+  </section>
+
+  <div class="ref-head">
+    <h2>Quick reference</h2>
+    <input class="search" id="refSearch" type="search" placeholder="Filter keys, IAST or notes…" aria-label="Filter the quick reference">
+  </div>
+  <div class="ref-grid" id="refGrid">
+{{REFCARDS}}
+  </div>
+  <p class="empty hidden" id="refEmpty">Nothing matches that filter.</p>
+</main>
+
+<footer>
+  <p>Based on the Mallige font by Prahlad Prasad Tantry · <em>Tuḷu Varṇāmr̥ta: A Prescriptive Primer to the Tuḷu Script</em> (2026)</p>
+  <p><a href="https://tantrytulufonts.github.io/tulu-varnamruta/">The book</a> · <a href="https://tantrytulufonts.github.io/tulu-script-standard/">The standard</a> · <a href="https://tantrytulufonts.github.io/acctantra/">AccTantra key map</a> · <a href="https://github.com/TantryTuluFonts">GitHub</a></p>
+</footer>
+
+<script>
+{{ENGINE}}
+{{UI}}
+</script>
+</body>
+</html>
