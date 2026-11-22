@@ -85,10 +85,6 @@ textarea,.out{flex:1;width:100%;border:0;background:transparent;color:var(--ink)
 textarea::placeholder{color:var(--muted);opacity:.8}
 .count{padding:6px 14px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);text-align:right}
 
-.examples{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:14px}
-.examples .lbl{font-size:13px;color:var(--muted);margin-right:4px}
-.ex{border:1px dashed var(--line);background:transparent;color:var(--ink);padding:5px 12px;border-radius:999px;cursor:pointer;font:400 14px var(--sans)}
-.ex:hover{border-color:var(--accent);border-style:solid}
 
 details.options{margin-top:16px;border-top:1px solid var(--line);padding-top:12px}
 details.options summary{cursor:pointer;font-weight:600;font-size:14px;color:var(--muted);list-style:none}
@@ -176,8 +172,6 @@ footer p{margin:6px 0}footer a{color:var(--accent)}
         <div class="count" id="outputCount">0 characters</div>
       </div>
     </div>
-
-    <div class="examples" id="examples"><span class="lbl">Try an example:</span></div>
 
     <details class="options">
       <summary>Options</summary>
@@ -1243,31 +1237,33 @@ const TULU_SUB  = 'Mallige font encoding';
 const VALID_DIRS = new Set(['tulu-iast','iast-tulu','tulu-deva','deva-tulu','tulu-kan','kan-tulu','tulu-mal','mal-tulu']);
 
 const PLACEHOLDERS = {
-  'tulu-iast': 'Type AccTantra text, for example: EAamAX nEma narayNay',
-  'iast-tulu': 'Type IAST, for example: ōm namō nārāyaṇāya',
-  'tulu-deva': 'Type AccTantra text, for example: tuLunawu',
+  'tulu-iast': 'Type AccTantra text',
+  'iast-tulu': 'Type IAST text',
+  'tulu-deva': 'Type AccTantra text',
   'deva-tulu': 'Type Devanāgarī text',
-  'tulu-kan':  'Type AccTantra text, for example: SArI',
+  'tulu-kan':  'Type AccTantra text',
   'kan-tulu':  'Type Kannaḍa text',
-  'tulu-mal':  'Type AccTantra text, for example: kmf',
+  'tulu-mal':  'Type AccTantra text',
   'mal-tulu':  'Type Malayāḷam text',
 };
-
-const EXAMPLE_WORDS = ['ōm namō nārāyaṇāya', 'tuḷu', 'tuḷunāḍu', 'śrī', 'karma', 'kṣatriya', 'vidyā', 'oṃ namaḥ śivāya'];
 
 const $ = (id) => document.getElementById(id);
 const inputText = $('inputText'), outputText = $('outputText');
 const inputCount = $('inputCount'), outputCount = $('outputCount');
 const inputLabel = $('inputLabel'), inputScript = $('inputScript');
 const outputLabel = $('outputLabel'), outputScript = $('outputScript');
-const dirText = $('dirText'), examplesBox = $('examples');
+const dirText = $('dirText');
 const copyBtn = $('copyBtn'), shareBtn = $('shareBtn'), swapBtn = $('swapBtn'), clearBtn = $('clearBtn');
 const zwnjCheck = $('zwnjCheck'), nasalCheck = $('nasalCheck'), fontCheck = $('fontCheck');
 const chips = Array.from(document.querySelectorAll('#scriptChips .chip'));
 
 let script = 'iast';
-let fromTulu = true;
+let fromTulu = false;            // the default direction is IAST → AccTantra
 let debounceTimer = null, hashTimer = null;
+
+// Starting text for the left box whenever the direction is AccTantra → something and the box is empty.
+const SAMPLE_TULU = 'tuLuqAX berel';
+function seedSample() { if (fromTulu && !inputText.value) inputText.value = SAMPLE_TULU; }
 
 const currentDir = () => (fromTulu ? 'tulu-' + script : script + '-tulu');
 const plural = (n) => n + (n === 1 ? ' character' : ' characters');
@@ -1291,23 +1287,6 @@ function doConvert() {
   outputCount.textContent = plural(out.length);
 }
 
-function renderExamples() {
-  examplesBox.querySelectorAll('.ex').forEach((n) => n.remove());
-  const savedZ = preserveZwnj; preserveZwnj = false;
-  EXAMPLE_WORDS.forEach((word) => {
-    const tulu = convert(word, 'iast-tulu');
-    let value;
-    if (fromTulu) value = tulu;
-    else if (script === 'iast') value = word;
-    else value = convert(tulu, 'tulu-' + script);
-    const b = document.createElement('button');
-    b.type = 'button'; b.className = 'ex'; b.textContent = word; b.dataset.value = value;
-    b.addEventListener('click', () => { inputText.value = value; doConvert(); scheduleHash(); });
-    examplesBox.appendChild(b);
-  });
-  preserveZwnj = savedZ;
-}
-
 function refresh() {
   const dir = currentDir();
   const sName = SCRIPT_NAMES[script];
@@ -1319,7 +1298,6 @@ function refresh() {
   inputText.placeholder = PLACEHOLDERS[dir];
   chips.forEach((c) => c.setAttribute('aria-checked', String(c.dataset.script === script)));
   applyTuluFont();
-  renderExamples();
   doConvert();
 }
 
@@ -1335,6 +1313,7 @@ swapBtn.addEventListener('click', () => {
   const carried = outputText.textContent;
   fromTulu = !fromTulu;
   inputText.value = carried;
+  seedSample();
   refresh(); scheduleHash(); inputText.focus();
 });
 
@@ -1458,9 +1437,14 @@ $('themeBtn').addEventListener('click', () => {
 // ---- start ----
 loadOptions();
 restoreFromHash();
+seedSample();
 refresh();
 // A link pasted into an already open tab only changes the hash, so listen for that too.
-window.addEventListener('hashchange', () => { restoreFromHash(); refresh(); });
+window.addEventListener('hashchange', () => { restoreFromHash(); seedSample(); refresh(); });
+// Some browsers put back the previous text after a reload without firing an input event,
+// which left the counters at 0 and the output empty. Convert again once the page has settled.
+window.addEventListener('load', doConvert);
+window.addEventListener('pageshow', (e) => { if (e.persisted) doConvert(); });
 
 </script>
 </body>
