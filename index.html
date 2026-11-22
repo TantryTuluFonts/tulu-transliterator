@@ -3,610 +3,197 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tuḷu Script Transliterator</title>
+<title>Tulu Transliterator: AccTantra, IAST, Devanagari, Kannada, Malayalam</title>
+<meta name="description" content="Convert Tulu text between AccTantra (the Mallige font encoding) and IAST, Devanagari, Kannada or Malayalam, in both directions. Free, by Prahlad Prasad Tantry.">
+<meta name="author" content="Prahlad Prasad Tantry">
+<meta name="color-scheme" content="light dark">
+<link rel="canonical" href="https://tantrytulufonts.github.io/tulu-transliterator/">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Tantry Tulu Font Foundry">
+<meta property="og:title" content="Tulu Transliterator: AccTantra, IAST, Devanagari, Kannada, Malayalam">
+<meta property="og:description" content="Convert Tulu text between AccTantra (the Mallige font encoding) and IAST, Devanagari, Kannada or Malayalam, in both directions.">
+<meta property="og:url" content="https://tantrytulufonts.github.io/tulu-transliterator/">
+<meta property="og:image" content="https://tantrytulufonts.github.io/tulu-transliterator/og-image.png">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Tulu Transliterator","url":"https://tantrytulufonts.github.io/tulu-transliterator/","description":"Converts Tulu text between AccTantra (the Mallige font encoding) and IAST, Devanagari, Kannada and Malayalam.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any (web browser)","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Prahlad Prasad Tantry","url":"https://tantrytulufonts.github.io/about/"},"publisher":{"@type":"Organization","name":"Tantry Tulu Font Foundry","url":"https://tantrytulufonts.github.io/"}}</script>
+<script>try{var t=localStorage.getItem('tt-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap');
+@font-face{font-family:'Mallige';src:url('tulu.ttf') format('truetype');font-weight:normal;font-style:normal;font-display:swap}
+:root{
+  --bg:#fbf7ef;--surface:#ffffff;--surface-2:#f4ecdc;--ink:#1d1a16;--muted:#6b6254;--line:#e2d9c6;
+  --accent:#7a4b1e;--accent-ink:#ffffff;--gold:#c8993a;--chip:#efe7d6;--ok:#1a7f4b;--shadow:0 1px 2px rgba(29,26,22,.06),0 8px 24px rgba(29,26,22,.07);
+  --serif:'Iowan Old Style','Palatino Linotype',Palatino,Georgia,'Times New Roman',serif;
+  --sans:system-ui,-apple-system,'Segoe UI',Roboto,'Noto Sans',sans-serif;
+  --mono:ui-monospace,'Cascadia Code','SF Mono',Consolas,'Liberation Mono',monospace;
+  --radius:14px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#14100c;--surface:#1d1712;--surface-2:#251d16;--ink:#f0e4cd;--muted:#a8997f;--line:#372b1e;
+  --accent:#e7be6e;--accent-ink:#1d1a16;--chip:#2c2218;--ok:#4cc38a;--shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35)}}
+:root[data-theme=dark]{
+  --bg:#14100c;--surface:#1d1712;--surface-2:#251d16;--ink:#f0e4cd;--muted:#a8997f;--line:#372b1e;
+  --accent:#e7be6e;--accent-ink:#1d1a16;--chip:#2c2218;--ok:#4cc38a;--shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:6px}
+.skip{position:absolute;left:-999px;top:8px;background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:8px;z-index:20}.skip:focus{left:8px}
 
-  @font-face {
-    font-family: 'Mallige';
-    src: url('tulu.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-  }
+/* top bar */
+.bar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px clamp(16px,4vw,40px);background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
+.brand{display:flex;align-items:center;gap:10px;color:var(--ink);text-decoration:none;font-weight:700;font-size:15px}
+.brand img{width:32px;height:32px;border-radius:50%}
+.bar nav{display:flex;align-items:center;gap:6px 18px;flex-wrap:wrap;font-size:14px}
+.bar nav a{color:var(--muted);text-decoration:none}.bar nav a:hover{color:var(--ink)}
+.icon-btn{border:1px solid var(--line);background:transparent;color:var(--ink);width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:16px;line-height:1}
+.icon-btn:hover{background:var(--chip)}
 
-  :root {
-    --ink: #1a1208;
-    --parchment: #f5edd8;
-    --parchment-dark: #ede0c0;
-    --parchment-mid: #f0e6cc;
-    --copper: #8b5e2e;
-    --copper-light: #b87d3e;
-    --copper-muted: #c49a65;
-    --rust: #7a3b1e;
-    --gold: #c8993a;
-    --gold-light: #e6b84a;
-    --shadow: rgba(26,18,8,0.15);
-    --shadow-deep: rgba(26,18,8,0.3);
-    --border: rgba(139,94,46,0.25);
-    --border-strong: rgba(139,94,46,0.5);
-  }
+/* hero */
+.hero{max-width:1100px;margin:0 auto;padding:clamp(28px,6vw,56px) clamp(16px,4vw,40px) 8px}
+.eyebrow{margin:0 0 8px;text-transform:uppercase;letter-spacing:.16em;font-size:12px;color:var(--muted)}
+h1{font:600 clamp(32px,6vw,52px)/1.1 var(--serif);margin:0 0 12px;letter-spacing:-.01em}
+.lead{font-size:clamp(16px,2.2vw,19px);color:var(--muted);max-width:720px;margin:0}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+/* tool */
+main{max-width:1100px;margin:0 auto;padding:0 clamp(16px,4vw,40px) 60px}
+.tool{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:clamp(14px,2.5vw,24px);margin-top:22px}
+.modebar{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;margin-bottom:16px}
+.modebar .lbl{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:var(--surface-2);color:var(--ink);padding:7px 14px;border-radius:999px;cursor:pointer;font:500 14px var(--sans)}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-checked=true]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.direction{margin-left:auto;display:flex;align-items:center;gap:10px;font:600 15px var(--serif)}
+.swap{border:1px solid var(--line);background:var(--surface-2);color:var(--ink);padding:7px 14px;border-radius:999px;cursor:pointer;font:500 14px var(--sans)}
+.swap:hover{border-color:var(--accent)}
 
-  body {
-    background: var(--parchment);
-    color: var(--ink);
-    font-family: 'Cormorant Garamond', Georgia, serif;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    background-image:
-      radial-gradient(ellipse at 20% 10%, rgba(200,153,58,0.08) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 90%, rgba(122,59,30,0.06) 0%, transparent 50%),
-      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%238b5e2e' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-  }
+.editor{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.editor{grid-template-columns:1fr}.direction{margin-left:0;width:100%}}
+.panel{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;background:var(--bg);overflow:hidden;min-height:240px}
+.panel:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 35%,transparent)}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.panel-head .t{font-weight:600;font-size:14px}.panel-head .s{display:block;font-weight:400;color:var(--muted);font-size:12px}
+.tools{display:flex;gap:6px}
+.btn-sm{border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:5px 12px;border-radius:8px;cursor:pointer;font:500 13px var(--sans)}
+.btn-sm:hover{border-color:var(--accent)}.btn-sm.ok{background:var(--ok);border-color:var(--ok);color:#fff}
+textarea,.out{flex:1;width:100%;border:0;background:transparent;color:var(--ink);padding:14px;font:400 20px/1.7 var(--sans);resize:vertical;min-height:170px;outline:0;overflow:auto;white-space:pre-wrap;word-break:break-word}
+.out.large-script{font-size:26px}
+.tulu-font{font-family:'Mallige',var(--sans)!important;font-size:30px!important;line-height:1.5!important}
+textarea::placeholder{color:var(--muted);opacity:.8}
+.count{padding:6px 14px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);text-align:right}
 
-  /* HEADER */
-  header {
-    text-align: center;
-    padding: 3rem 2rem 2rem;
-    border-bottom: 1px solid var(--border);
-    position: relative;
-  }
+.examples{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:14px}
+.examples .lbl{font-size:13px;color:var(--muted);margin-right:4px}
+.ex{border:1px dashed var(--line);background:transparent;color:var(--ink);padding:5px 12px;border-radius:999px;cursor:pointer;font:400 14px var(--sans)}
+.ex:hover{border-color:var(--accent);border-style:solid}
 
-  header::before {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 50%;
-    transform: translateX(-50%);
-    width: 60%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--copper), var(--gold), var(--copper), transparent);
-  }
+details.options{margin-top:16px;border-top:1px solid var(--line);padding-top:12px}
+details.options summary{cursor:pointer;font-weight:600;font-size:14px;color:var(--muted);list-style:none}
+details.options summary::-webkit-details-marker{display:none}
+details.options summary::before{content:'▸ ';color:var(--accent)}details.options[open] summary::before{content:'▾ '}
+.switches{display:grid;gap:12px;margin-top:12px}
+.switch{display:flex;gap:12px;align-items:flex-start;cursor:pointer}
+.switch input{position:absolute;opacity:0}
+.switch .track{flex:0 0 40px;height:22px;border-radius:999px;background:var(--line);position:relative;transition:background .15s;margin-top:2px}
+.switch .track::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .15s;box-shadow:0 1px 2px rgba(0,0,0,.3)}
+.switch input:checked+.track{background:var(--accent)}.switch input:checked+.track::after{transform:translateX(18px)}
+.switch input:focus-visible+.track{outline:3px solid var(--gold);outline-offset:2px}
+.switch .txt{font-size:14px;line-height:1.45}.switch .txt small{display:block;color:var(--muted)}
 
-  .title-tulu {
-    font-size: 2.2rem;
-    font-weight: 300;
-    letter-spacing: 0.08em;
-    color: var(--copper);
-    line-height: 1;
-    margin-bottom: 0.3rem;
-  }
+/* reference */
+.ref-head{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px;margin:44px 0 14px}
+.ref-head h2{font:600 28px var(--serif);margin:0}
+.search{border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:9px 14px;border-radius:999px;min-width:min(100%,260px);font:400 15px var(--sans)}
+.ref-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,310px),1fr));gap:16px}
+.ref-card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow);min-width:0;overflow-x:auto}
+.ref-card h4{margin:0 0 8px;font:600 16px var(--serif);color:var(--accent)}
+.ref-table{width:100%;border-collapse:collapse;font-size:14px}
+.ref-table td{padding:5px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+.ref-table tr:last-child td{border-bottom:0}
+.ref-table td:first-child{font-family:var(--mono);color:var(--accent);white-space:nowrap}
+.ref-table td.g{font-family:'Mallige',var(--sans);font-size:24px;line-height:1.2;white-space:nowrap}
+.ref-table td:nth-child(3){white-space:nowrap}
+.ref-table td:last-child{color:var(--muted);font-size:13px}
+.hidden{display:none!important}
+.empty{color:var(--muted);padding:20px 0}
 
-  .title-main {
-    font-size: 3.5rem;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    color: var(--ink);
-    line-height: 1;
-    margin-bottom: 0.5rem;
-  }
-
-  .title-sub {
-    font-size: 1.1rem;
-    font-weight: 300;
-    font-style: italic;
-    color: var(--copper-muted);
-    letter-spacing: 0.05em;
-  }
-
-  .om-symbol {
-    font-size: 1.6rem;
-    color: var(--gold);
-    margin: 0 0.5rem;
-    opacity: 0.7;
-  }
-
-  /* DIRECTION SELECTOR */
-  .direction-panel {
-    display: flex;
-    justify-content: center;
-    padding: 2rem 2rem 0;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .dir-btn {
-    background: var(--parchment-mid);
-    border: 1px solid var(--border);
-    color: var(--copper);
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1rem;
-    font-weight: 500;
-    padding: 0.55rem 1.2rem;
-    cursor: pointer;
-    border-radius: 3px;
-    transition: all 0.2s ease;
-    letter-spacing: 0.03em;
-    white-space: nowrap;
-  }
-
-  .dir-btn:hover {
-    background: var(--parchment-dark);
-    border-color: var(--copper);
-    color: var(--rust);
-  }
-
-  .dir-btn.active {
-    background: var(--copper);
-    border-color: var(--copper);
-    color: var(--parchment);
-    box-shadow: 0 2px 8px var(--shadow);
-  }
-
-  /* MAIN EDITOR */
-  .editor-wrap {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 2rem;
-    max-width: 1100px;
-    width: 100%;
-    margin: 0 auto;
-  }
-
-  .columns {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    gap: 0;
-    align-items: stretch;
-    flex: 1;
-  }
-
-  .panel {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .panel-label {
-    font-size: 0.8rem;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--copper);
-    padding: 0 0 0.5rem 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .panel-label-script {
-    font-style: italic;
-    font-size: 0.9rem;
-    color: var(--copper-muted);
-    letter-spacing: 0.04em;
-    text-transform: none;
-    font-weight: 400;
-  }
-
-  .text-area-wrap {
-    flex: 1;
-    position: relative;
-    border: 1px solid var(--border-strong);
-    border-radius: 4px;
-    background: rgba(245,237,216,0.6);
-    box-shadow: inset 0 2px 8px var(--shadow), 0 1px 3px var(--shadow);
-    overflow: hidden;
-    min-height: 260px;
-  }
-
-  .text-area-wrap:focus-within {
-    border-color: var(--copper);
-    box-shadow: inset 0 2px 8px var(--shadow), 0 0 0 2px rgba(139,94,46,0.15);
-  }
-
-  textarea {
-    width: 100%;
-    height: 100%;
-    min-height: 260px;
-    border: none;
-    background: transparent;
-    padding: 1.2rem 1.4rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 1.1rem;
-    font-weight: 300;
-    color: var(--ink);
-    resize: none;
-    outline: none;
-    line-height: 1.8;
-  }
-
-  textarea::placeholder {
-    color: var(--copper-muted);
-    opacity: 0.6;
-    font-style: italic;
-    font-family: 'Cormorant Garamond', serif;
-    font-weight: 300;
-  }
-
-  .output-area {
-    width: 100%;
-    min-height: 260px;
-    padding: 1.2rem 1.4rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 1.1rem;
-    font-weight: 300;
-    color: var(--rust);
-    line-height: 1.8;
-    white-space: pre-wrap;
-    word-break: break-word;
-    cursor: text;
-    user-select: text;
-  }
-
-  .output-area.large-script {
-    font-size: 1.3rem;
-    font-family: 'Noto Serif Devanagari', 'Noto Serif', serif;
-  }
-
-  /* TULU (MALLIGE) FONT */
-  textarea.tulu-font,
-  .output-area.tulu-font {
-    font-family: 'Mallige', 'JetBrains Mono', monospace;
-    font-size: 1.35rem;
-    line-height: 2;
-    font-kerning: normal;
-    font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1, 'clig' 1, 'mark' 1, 'mkmk' 1, 'dist' 1, 'abvm' 1, 'blwm' 1;
-    -webkit-font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1, 'clig' 1, 'mark' 1, 'mkmk' 1, 'dist' 1, 'abvm' 1, 'blwm' 1;
-    text-rendering: optimizeLegibility;
-  }
-
-  /* CENTER ARROW */
-  .arrow-col {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem 1.5rem 0;
-  }
-
-  .arrow-wrap {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .arrow-svg {
-    width: 32px;
-    height: 32px;
-    color: var(--copper-muted);
-  }
-
-  .swap-btn {
-    background: var(--parchment-mid);
-    border: 1px solid var(--border);
-    color: var(--copper);
-    font-size: 0.75rem;
-    font-family: 'Cormorant Garamond', serif;
-    letter-spacing: 0.1em;
-    padding: 0.3rem 0.6rem;
-    cursor: pointer;
-    border-radius: 3px;
-    transition: all 0.2s;
-    text-transform: uppercase;
-  }
-
-  .swap-btn:hover {
-    background: var(--copper);
-    color: var(--parchment);
-  }
-
-  /* COPY BUTTON */
-  .copy-btn {
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--copper-muted);
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 0.8rem;
-    padding: 0.2rem 0.6rem;
-    cursor: pointer;
-    border-radius: 3px;
-    transition: all 0.2s;
-    letter-spacing: 0.05em;
-  }
-
-  .copy-btn:hover {
-    border-color: var(--copper);
-    color: var(--copper);
-  }
-
-  .copy-btn.copied {
-    color: var(--gold);
-    border-color: var(--gold);
-  }
-
-  /* CHAR COUNT */
-  .char-count {
-    font-size: 0.75rem;
-    color: var(--copper-muted);
-    padding: 0.4rem 0.2rem 0;
-    font-family: 'JetBrains Mono', monospace;
-    font-weight: 300;
-    text-align: right;
-  }
-
-  /* DIVIDER */
-  .divider {
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--border-strong), transparent);
-    margin: 2rem 0 1.5rem;
-  }
-
-  /* REFERENCE PANEL */
-  .reference-section {
-    padding: 0 0 3rem;
-  }
-
-  .reference-toggle {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    cursor: pointer;
-    user-select: none;
-  }
-
-  .reference-toggle h3 {
-    font-size: 1rem;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--copper);
-  }
-
-  .toggle-arrow {
-    color: var(--copper-muted);
-    transition: transform 0.3s;
-    font-size: 0.8rem;
-  }
-
-  .reference-toggle.open .toggle-arrow {
-    transform: rotate(180deg);
-  }
-
-  .reference-grid {
-    display: none;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
-    margin-top: 1.5rem;
-  }
-
-  .reference-grid.show {
-    display: grid;
-  }
-
-  .ref-card {
-    background: rgba(245,237,216,0.5);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 1rem 1.2rem;
-  }
-
-  .ref-card h4 {
-    font-size: 0.75rem;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--copper);
-    margin-bottom: 0.8rem;
-    padding-bottom: 0.4rem;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .ref-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.88rem;
-  }
-
-  .ref-table td {
-    padding: 0.2rem 0.5rem 0.2rem 0;
-    vertical-align: middle;
-  }
-
-  .ref-table td:first-child {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.82rem;
-    color: var(--rust);
-    font-weight: 500;
-    min-width: 60px;
-  }
-
-  .ref-table td:nth-child(2) {
-    color: var(--ink);
-    font-style: italic;
-    min-width: 50px;
-  }
-
-  .ref-table td:nth-child(3) {
-    color: var(--copper-muted);
-    font-size: 0.8rem;
-  }
-
-  /* FOOTER */
-  footer {
-    text-align: center;
-    padding: 1.5rem;
-    border-top: 1px solid var(--border);
-    font-size: 0.85rem;
-    font-style: italic;
-    color: var(--copper-muted);
-    font-weight: 300;
-  }
-
-  /* ZWNJ CHECKBOX PANEL */
-  .zwnj-panel {
-    display: flex;
-    justify-content: center;
-    padding: 0.75rem 2rem 0;
-  }
-
-  .zwnj-label {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    cursor: pointer;
-    user-select: none;
-  }
-
-  .zwnj-check-wrap {
-    position: relative;
-    width: 16px;
-    height: 16px;
-    flex-shrink: 0;
-  }
-
-  .zwnj-check-wrap input[type="checkbox"] {
-    opacity: 0;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    cursor: pointer;
-    z-index: 1;
-  }
-
-  .zwnj-checkmark {
-    position: absolute;
-    inset: 0;
-    border: 1.5px solid var(--border-strong);
-    border-radius: 2px;
-    background: var(--parchment-mid);
-    transition: all 0.15s ease;
-  }
-
-  .zwnj-check-wrap input:checked ~ .zwnj-checkmark {
-    background: var(--copper);
-    border-color: var(--copper);
-  }
-
-  .zwnj-check-wrap input:checked ~ .zwnj-checkmark::after {
-    content: '';
-    position: absolute;
-    left: 4px;
-    top: 1px;
-    width: 5px;
-    height: 9px;
-    border: 1.5px solid var(--parchment);
-    border-top: none;
-    border-left: none;
-    transform: rotate(45deg);
-  }
-
-  .zwnj-text {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 0.92rem;
-    font-weight: 400;
-    color: var(--copper);
-    letter-spacing: 0.02em;
-  }
-
-  .zwnj-label:hover .zwnj-text {
-    color: var(--rust);
-  }
-
-  /* MOBILE */
-  @media (max-width: 700px) {
-    .columns { grid-template-columns: 1fr; }
-    .arrow-col { padding: 1rem 0; transform: rotate(90deg); }
-    .title-main { font-size: 2.5rem; }
-    .editor-wrap { padding: 1rem; }
-    .direction-panel { padding: 1rem 1rem 0; }
-  }
+footer{border-top:1px solid var(--line);background:var(--surface);padding:28px clamp(16px,4vw,40px);text-align:center;color:var(--muted);font-size:14px}
+footer p{margin:6px 0}footer a{color:var(--accent)}
+@media (max-width:520px){.brand span{display:none}.bar{padding:10px 14px}.ref-table td.g{font-size:20px}.ref-table td:first-child{white-space:normal;word-break:break-all}.ref-table td:nth-child(3){white-space:normal}.tulu-font{font-size:26px!important}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
-
-<header>
-  <div class="title-tulu"><span class="om-symbol">ॐ</span> Mallige Script Tool</div>
-  <div class="title-main">Tuḷu Transliterator</div>
-  <div class="title-sub">Mallige font encoding ↔ IAST · Devanāgarī · Kannaḍa · Malayāḷam</div>
+<a class="skip" href="#tool">Skip to the tool</a>
+<header class="bar">
+  <a class="brand" href="https://tantrytulufonts.github.io/"><img src="favicon-32.png" alt="" width="32" height="32"><span>Tantry Tulu Font Foundry</span></a>
+  <nav aria-label="Site">
+    <a href="https://tantrytulufonts.github.io/tulu-varnamruta/">The book</a>
+    <a href="https://tantrytulufonts.github.io/tulu-script-standard/">The standard</a>
+    <a href="https://tantrytulufonts.github.io/acctantra/">AccTantra</a>
+    <a href="https://tantrytulufonts.github.io/fonts/">Fonts</a>
+    <button class="icon-btn" id="themeBtn" type="button" aria-label="Switch between light and dark theme" title="Light / dark">◐</button>
+  </nav>
 </header>
 
-<div class="direction-panel">
-  <button class="dir-btn active" data-dir="tulu-iast">Tuḷu → IAST</button>
-  <button class="dir-btn" data-dir="iast-tulu">IAST → Tuḷu</button>
-  <button class="dir-btn" data-dir="tulu-deva">Tuḷu → Devanāgarī</button>
-  <button class="dir-btn" data-dir="deva-tulu">Devanāgarī → Tuḷu</button>
-  <button class="dir-btn" data-dir="tulu-kan">Tuḷu → Kannaḍa</button>
-  <button class="dir-btn" data-dir="kan-tulu">Kannaḍa → Tuḷu</button>
-  <button class="dir-btn" data-dir="tulu-mal">Tuḷu → Malayāḷam</button>
-  <button class="dir-btn" data-dir="mal-tulu">Malayāḷam → Tuḷu</button>
-</div>
+<section class="hero">
+  <p class="eyebrow">Tuḷu script tool</p>
+  <h1>Tuḷu Transliterator</h1>
+  <p class="lead">Convert Tuḷu text between <strong>AccTantra</strong> (the Mallige font encoding) and <strong>IAST</strong>, <strong>Devanāgarī</strong>, <strong>Kannaḍa</strong> or <strong>Malayāḷam</strong>, in both directions.</p>
+</section>
 
-<div class="zwnj-panel">
-  <label class="zwnj-label" id="zwnjLabel">
-    <span class="zwnj-check-wrap">
-      <input type="checkbox" id="zwnjCheck">
-      <span class="zwnj-checkmark"></span>
-    </span>
-    <span class="zwnj-text">Preserve non-joining virāmas (X → virama + ZWNJ)</span>
-  </label>
-</div>
-
-<div class="zwnj-panel">
-  <label class="zwnj-label" id="nasalLabel">
-    <span class="zwnj-check-wrap">
-      <input type="checkbox" id="nasalCheck">
-      <span class="zwnj-checkmark"></span>
-    </span>
-    <span class="zwnj-text">Disable pañcama-parasavarṇa (keep anusvāra as ṃ instead of class nasal)</span>
-  </label>
-</div>
-
-<div class="zwnj-panel">
-  <label class="zwnj-label" id="fontLabel">
-    <span class="zwnj-check-wrap">
-      <input type="checkbox" id="fontCheck">
-      <span class="zwnj-checkmark"></span>
-    </span>
-    <span class="zwnj-text">Render Tuḷu text in Mallige script font</span>
-  </label>
-</div>
-
-<div class="editor-wrap">
-  <div class="columns">
-    <div class="panel">
-      <div class="panel-label">
-        <span id="inputLabel">Input · Tuḷu (Mallige)</span>
-        <span class="panel-label-script" id="inputScript">Mallige encoding</span>
+<main id="main">
+  <section class="tool" id="tool" aria-label="Transliterator">
+    <div class="modebar">
+      <span class="lbl" id="scriptLbl">AccTantra and</span>
+      <div class="chips" role="radiogroup" aria-labelledby="scriptLbl" id="scriptChips">
+        <button type="button" class="chip" role="radio" aria-checked="true"  data-script="iast">IAST</button>
+        <button type="button" class="chip" role="radio" aria-checked="false" data-script="deva">Devanāgarī</button>
+        <button type="button" class="chip" role="radio" aria-checked="false" data-script="kan">Kannaḍa</button>
+        <button type="button" class="chip" role="radio" aria-checked="false" data-script="mal">Malayāḷam</button>
       </div>
-      <div class="text-area-wrap">
-        <textarea id="inputText" placeholder="Type or paste Mallige-encoded Tuḷu text here…" spellcheck="false" autocomplete="off" autocorrect="off"></textarea>
-      </div>
-      <div class="char-count" id="inputCount">0 chars</div>
+      <div class="direction" aria-live="polite"><span id="dirText">AccTantra → IAST</span><button type="button" class="swap" id="swapBtn" title="Swap direction and carry the result across">⇄ Swap</button></div>
     </div>
 
-    <div class="arrow-col">
-      <div class="arrow-wrap">
-        <svg class="arrow-svg" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M6 16h20M18 8l8 8-8 8"/>
-        </svg>
-        <button class="swap-btn" id="swapBtn" title="Swap input/output">⇄ swap</button>
+    <div class="editor">
+      <div class="panel">
+        <div class="panel-head">
+          <span class="t"><span id="inputLabel">Input</span><span class="s" id="inputScript"></span></span>
+          <span class="tools"><button type="button" class="btn-sm" id="clearBtn">Clear</button></span>
+        </div>
+        <textarea id="inputText" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" aria-label="Input text"></textarea>
+        <div class="count" id="inputCount">0 characters</div>
+      </div>
+      <div class="panel">
+        <div class="panel-head">
+          <span class="t"><span id="outputLabel">Output</span><span class="s" id="outputScript"></span></span>
+          <span class="tools"><button type="button" class="btn-sm" id="shareBtn" title="Copy a link to this conversion">Share link</button><button type="button" class="btn-sm" id="copyBtn">Copy</button></span>
+        </div>
+        <div class="out" id="outputText" contenteditable="true" spellcheck="false" role="textbox" aria-multiline="true" aria-live="polite" aria-label="Converted text"></div>
+        <div class="count" id="outputCount">0 characters</div>
       </div>
     </div>
 
-    <div class="panel">
-      <div class="panel-label">
-        <span id="outputLabel">Output · IAST</span>
-        <button class="copy-btn" id="copyBtn">copy</button>
+    <div class="examples" id="examples"><span class="lbl">Try an example:</span></div>
+
+    <details class="options">
+      <summary>Options</summary>
+      <div class="switches">
+        <label class="switch"><input type="checkbox" id="fontCheck" checked><span class="track"></span><span class="txt">Show AccTantra text in the Mallige font<small>Makes the encoded text readable as Tuḷu script.</small></span></label>
+        <label class="switch"><input type="checkbox" id="zwnjCheck"><span class="track"></span><span class="txt">Preserve non-joining virāmas<small>X becomes virāma plus ZWNJ when converting to Devanāgarī, Kannaḍa or Malayāḷam.</small></span></label>
+        <label class="switch"><input type="checkbox" id="nasalCheck"><span class="track"></span><span class="txt">Keep anusvāra as ṃ<small>Disables pañcama-parasavarṇa, so ṃ is not turned into the class nasal.</small></span></label>
       </div>
-      <div class="text-area-wrap">
-        <div class="output-area" id="outputText" contenteditable="true" spellcheck="false"></div>
-      </div>
-      <div class="char-count" id="outputCount">0 chars</div>
-    </div>
+    </details>
+  </section>
+
+  <div class="ref-head">
+    <h2>Quick reference</h2>
+    <input class="search" id="refSearch" type="search" placeholder="Filter keys, IAST or notes…" aria-label="Filter the quick reference">
   </div>
-
-  <div class="divider"></div>
-
-  <div class="reference-section">
-    <div class="reference-toggle" id="refToggle">
-      <h3>Quick Reference</h3>
-      <span class="toggle-arrow">▼</span>
-    </div>
-    <div class="reference-grid" id="refGrid">
-
+  <div class="ref-grid" id="refGrid">
       <div class="ref-card">
         <h4>Vowels — Independent</h4>
         <table class="ref-table">
@@ -712,12 +299,13 @@
         </table>
       </div>
 
-    </div>
   </div>
-</div>
+  <p class="empty hidden" id="refEmpty">Nothing matches that filter.</p>
+</main>
 
 <footer>
-  Based on the Mallige font by Prahlad Prasad Tantry · <em>A Prescriptive Primer to the Tuḷu Script</em> (2026)
+  <p>Based on the Mallige font by Prahlad Prasad Tantry · <em>Tuḷu Varṇāmr̥ta: A Prescriptive Primer to the Tuḷu Script</em> (2026)</p>
+  <p><a href="https://tantrytulufonts.github.io/tulu-varnamruta/">The book</a> · <a href="https://tantrytulufonts.github.io/tulu-script-standard/">The standard</a> · <a href="https://tantrytulufonts.github.io/acctantra/">AccTantra key map</a> · <a href="https://github.com/TantryTuluFonts">GitHub</a></p>
 </footer>
 
 <script>
@@ -1642,161 +1230,238 @@ function convert(text, dir) {
     return '[Error: ' + e.message + ']';
   }
 }
-
 // ============================================================
-// UI LOGIC
+// USER INTERFACE
+// Everything above this line is the conversion engine, unchanged.
+// The interface below only reads and writes text through convert().
 // ============================================================
 
-const DIRECTION_LABELS = {
-  'tulu-iast': { in: 'Input · Tuḷu (Mallige)',  inSub: 'Mallige font encoding', out: 'Output · IAST',       outSub: 'IAST romanization' },
-  'iast-tulu': { in: 'Input · IAST',            inSub: 'IAST romanization',     out: 'Output · Tuḷu',       outSub: 'Mallige encoding' },
-  'tulu-deva': { in: 'Input · Tuḷu (Mallige)',  inSub: 'Mallige font encoding', out: 'Output · Devanāgarī', outSub: 'Devanagari Unicode' },
-  'deva-tulu': { in: 'Input · Devanāgarī',      inSub: 'Devanagari Unicode',    out: 'Output · Tuḷu',       outSub: 'Mallige encoding' },
-  'tulu-kan':  { in: 'Input · Tuḷu (Mallige)',  inSub: 'Mallige font encoding', out: 'Output · Kannaḍa',    outSub: 'Kannada Unicode' },
-  'kan-tulu':  { in: 'Input · Kannaḍa',         inSub: 'Kannada Unicode',       out: 'Output · Tuḷu',       outSub: 'Mallige encoding' },
-  'tulu-mal':  { in: 'Input · Tuḷu (Mallige)',  inSub: 'Mallige font encoding', out: 'Output · Malayāḷam',  outSub: 'Malayalam Unicode' },
-  'mal-tulu':  { in: 'Input · Malayāḷam',       inSub: 'Malayalam Unicode',     out: 'Output · Tuḷu',       outSub: 'Mallige encoding' },
+const SCRIPT_NAMES = { iast: 'IAST', deva: 'Devanāgarī', kan: 'Kannaḍa', mal: 'Malayāḷam' };
+const SCRIPT_SUB   = { iast: 'IAST romanization', deva: 'Devanagari Unicode', kan: 'Kannada Unicode', mal: 'Malayalam Unicode' };
+const TULU_NAME = 'AccTantra';
+const TULU_SUB  = 'Mallige font encoding';
+const VALID_DIRS = new Set(['tulu-iast','iast-tulu','tulu-deva','deva-tulu','tulu-kan','kan-tulu','tulu-mal','mal-tulu']);
+
+const PLACEHOLDERS = {
+  'tulu-iast': 'Type AccTantra text, for example: EAamAX nEma narayNay',
+  'iast-tulu': 'Type IAST, for example: ōm namō nārāyaṇāya',
+  'tulu-deva': 'Type AccTantra text, for example: tuLunawu',
+  'deva-tulu': 'Type Devanāgarī text',
+  'tulu-kan':  'Type AccTantra text, for example: SArI',
+  'kan-tulu':  'Type Kannaḍa text',
+  'tulu-mal':  'Type AccTantra text, for example: kmf',
+  'mal-tulu':  'Type Malayāḷam text',
 };
 
-const UNICODE_SCRIPTS = new Set(['deva-tulu','kan-tulu','mal-tulu','tulu-deva','tulu-kan','tulu-mal']);
+const EXAMPLE_WORDS = ['ōm namō nārāyaṇāya', 'tuḷu', 'tuḷunāḍu', 'śrī', 'karma', 'kṣatriya', 'vidyā', 'oṃ namaḥ śivāya'];
 
-let currentDir = 'tulu-iast';
-let debounceTimer = null;
+const $ = (id) => document.getElementById(id);
+const inputText = $('inputText'), outputText = $('outputText');
+const inputCount = $('inputCount'), outputCount = $('outputCount');
+const inputLabel = $('inputLabel'), inputScript = $('inputScript');
+const outputLabel = $('outputLabel'), outputScript = $('outputScript');
+const dirText = $('dirText'), examplesBox = $('examples');
+const copyBtn = $('copyBtn'), shareBtn = $('shareBtn'), swapBtn = $('swapBtn'), clearBtn = $('clearBtn');
+const zwnjCheck = $('zwnjCheck'), nasalCheck = $('nasalCheck'), fontCheck = $('fontCheck');
+const chips = Array.from(document.querySelectorAll('#scriptChips .chip'));
 
-const inputText  = document.getElementById('inputText');
-const outputText = document.getElementById('outputText');
-const inputLabel = document.getElementById('inputLabel');
-const inputScript= document.getElementById('inputScript');
-const outputLabel= document.getElementById('outputLabel');
-const inputCount = document.getElementById('inputCount');
-const outputCount= document.getElementById('outputCount');
-const copyBtn    = document.getElementById('copyBtn');
-const swapBtn    = document.getElementById('swapBtn');
-const dirBtns    = document.querySelectorAll('.dir-btn');
-const refToggle  = document.getElementById('refToggle');
-const refGrid    = document.getElementById('refGrid');
+let script = 'iast';
+let fromTulu = true;
+let debounceTimer = null, hashTimer = null;
 
-function updateLabels() {
-  const labels = DIRECTION_LABELS[currentDir];
-  inputLabel.textContent  = labels.in;
-  inputScript.textContent = labels.inSub;
-  outputLabel.textContent = labels.out;
+const currentDir = () => (fromTulu ? 'tulu-' + script : script + '-tulu');
+const plural = (n) => n + (n === 1 ? ' character' : ' characters');
+
+function store(key, value) { try { localStorage.setItem(key, value); } catch (e) {} }
+function load(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
+
+function applyTuluFont() {
+  const on = fontCheck.checked;
+  inputText.classList.toggle('tulu-font', on && fromTulu);
+  outputText.classList.toggle('tulu-font', on && !fromTulu);
+  // Larger type when the output is a Unicode Indic script (not IAST, not AccTantra)
+  outputText.classList.toggle('large-script', fromTulu && script !== 'iast');
 }
 
 function doConvert() {
   const text = inputText.value;
-  inputCount.textContent  = text.length + ' chars';
-  const out = convert(text, currentDir);
-  outputText.textContent  = out;
-  outputCount.textContent = out.length + ' chars';
-
-  // Apply larger font for unicode script outputs
-  if (UNICODE_SCRIPTS.has(currentDir) && !currentDir.endsWith('-tulu')) {
-    outputText.classList.add('large-script');
-  } else {
-    outputText.classList.remove('large-script');
-  }
+  inputCount.textContent = plural(text.length);
+  const out = convert(text, currentDir());
+  outputText.textContent = out;
+  outputCount.textContent = plural(out.length);
 }
 
-function setDirection(dir) {
-  currentDir = dir;
-  dirBtns.forEach(b => b.classList.toggle('active', b.dataset.dir === dir));
-  updateLabels();
+function renderExamples() {
+  examplesBox.querySelectorAll('.ex').forEach((n) => n.remove());
+  const savedZ = preserveZwnj; preserveZwnj = false;
+  EXAMPLE_WORDS.forEach((word) => {
+    const tulu = convert(word, 'iast-tulu');
+    let value;
+    if (fromTulu) value = tulu;
+    else if (script === 'iast') value = word;
+    else value = convert(tulu, 'tulu-' + script);
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'ex'; b.textContent = word; b.dataset.value = value;
+    b.addEventListener('click', () => { inputText.value = value; doConvert(); scheduleHash(); });
+    examplesBox.appendChild(b);
+  });
+  preserveZwnj = savedZ;
+}
+
+function refresh() {
+  const dir = currentDir();
+  const sName = SCRIPT_NAMES[script];
+  inputLabel.textContent  = 'Input · ' + (fromTulu ? TULU_NAME : sName);
+  inputScript.textContent = fromTulu ? TULU_SUB : SCRIPT_SUB[script];
+  outputLabel.textContent  = 'Output · ' + (fromTulu ? sName : TULU_NAME);
+  outputScript.textContent = fromTulu ? SCRIPT_SUB[script] : TULU_SUB;
+  dirText.textContent = (fromTulu ? TULU_NAME : sName) + ' → ' + (fromTulu ? sName : TULU_NAME);
+  inputText.placeholder = PLACEHOLDERS[dir];
+  chips.forEach((c) => c.setAttribute('aria-checked', String(c.dataset.script === script)));
   applyTuluFont();
-  inputText.value = '';
-  outputText.textContent = '';
-  inputCount.textContent  = '0 chars';
-  outputCount.textContent = '0 chars';
-  inputText.focus();
+  renderExamples();
+  doConvert();
 }
 
-dirBtns.forEach(btn => {
-  btn.addEventListener('click', () => setDirection(btn.dataset.dir));
+// ---- script chips, swap, clear ----
+chips.forEach((chip) => chip.addEventListener('click', () => {
+  if (chip.dataset.script === script) return;
+  script = chip.dataset.script;
+  if (!fromTulu) inputText.value = '';   // the input script changed, so the old text no longer applies
+  refresh(); scheduleHash();
+}));
+
+swapBtn.addEventListener('click', () => {
+  const carried = outputText.textContent;
+  fromTulu = !fromTulu;
+  inputText.value = carried;
+  refresh(); scheduleHash(); inputText.focus();
+});
+
+clearBtn.addEventListener('click', () => {
+  inputText.value = ''; outputText.textContent = '';
+  inputCount.textContent = plural(0); outputCount.textContent = plural(0);
+  scheduleHash(); inputText.focus();
 });
 
 inputText.addEventListener('input', () => {
   clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(doConvert, 80);
+  debounceTimer = setTimeout(() => { doConvert(); scheduleHash(); }, 80);
 });
 
-// Swap button: reverse direction and swap content
-swapBtn.addEventListener('click', () => {
-  const parts = currentDir.split('-');
-  const reversed = parts[1] + '-' + parts[0];
-  if (DIRECTION_LABELS[reversed]) {
-    const currentOutput = outputText.textContent;
-    setDirection(reversed);
-    inputText.value = currentOutput;
-    doConvert();
-  }
-});
-
+// ---- copy and share ----
+function copyText(text) {
+  if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+  return new Promise((resolve, reject) => {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy') ? resolve() : reject(); } catch (e) { reject(e); }
+    document.body.removeChild(ta);
+  });
+}
+function flash(btn, label) {
+  const old = btn.dataset.label || btn.textContent;
+  btn.dataset.label = old; btn.textContent = label; btn.classList.add('ok');
+  setTimeout(() => { btn.textContent = old; btn.classList.remove('ok'); }, 1500);
+}
 copyBtn.addEventListener('click', () => {
   const text = outputText.textContent;
   if (!text) return;
-  navigator.clipboard.writeText(text).then(() => {
-    copyBtn.textContent = 'copied!';
-    copyBtn.classList.add('copied');
-    setTimeout(() => {
-      copyBtn.textContent = 'copy';
-      copyBtn.classList.remove('copied');
-    }, 1500);
-  });
+  copyText(text).then(() => flash(copyBtn, 'Copied'), () => flash(copyBtn, 'Press Ctrl+C'));
 });
 
-const zwnjCheck   = document.getElementById('zwnjCheck');
+function shareUrl() {
+  const q = inputText.value;
+  const base = location.origin + location.pathname;
+  return q ? base + '#d=' + currentDir() + '&q=' + encodeURIComponent(q) : base + '#d=' + currentDir();
+}
+function scheduleHash() {
+  clearTimeout(hashTimer);
+  hashTimer = setTimeout(() => {
+    try { history.replaceState(null, '', inputText.value ? shareUrl().replace(location.origin + location.pathname, '') : location.pathname + location.search); } catch (e) {}
+  }, 400);
+}
+shareBtn.addEventListener('click', () => {
+  copyText(shareUrl()).then(() => flash(shareBtn, 'Link copied'), () => flash(shareBtn, 'Copy failed'));
+});
 
-zwnjCheck.addEventListener('change', () => {
+function restoreFromHash() {
+  const h = location.hash.replace(/^#/, '');
+  if (!h) return;
+  const p = new URLSearchParams(h);
+  const d = p.get('d');
+  if (d && VALID_DIRS.has(d)) {
+    const [a, b] = d.split('-');
+    fromTulu = (a === 'tulu');
+    script = fromTulu ? b : a;
+  }
+  const q = p.get('q');
+  if (q) inputText.value = q;
+}
+
+// ---- options ----
+function saveOptions() {
+  store('tt-opts', JSON.stringify({ font: fontCheck.checked, zwnj: zwnjCheck.checked, nasal: nasalCheck.checked }));
+}
+function loadOptions() {
+  try {
+    const o = JSON.parse(load('tt-opts') || '{}');
+    if (typeof o.font === 'boolean') fontCheck.checked = o.font;
+    if (typeof o.zwnj === 'boolean') zwnjCheck.checked = o.zwnj;
+    if (typeof o.nasal === 'boolean') nasalCheck.checked = o.nasal;
+  } catch (e) {}
   preserveZwnj = zwnjCheck.checked;
-  doConvert();
-});
-
-const nasalCheck = document.getElementById('nasalCheck');
-nasalCheck.addEventListener('change', () => {
   resolveNasals = !nasalCheck.checked;
-  doConvert();
-});
-
-let useTuluFont = false;
-const fontCheck = document.getElementById('fontCheck');
-fontCheck.addEventListener('change', () => {
-  useTuluFont = fontCheck.checked;
-  applyTuluFont();
-});
-
-function applyTuluFont() {
-  // Only apply the Mallige font to the side(s) showing Tuḷu (Mallige) text.
-  // Directions ending in '-tulu' have Tuḷu on the OUTPUT side.
-  // Directions starting with 'tulu-' have Tuḷu on the INPUT side.
-  const tuluIsInput  = currentDir.startsWith('tulu-');
-  const tuluIsOutput = currentDir.endsWith('-tulu');
-  inputText.classList.toggle('tulu-font', useTuluFont && tuluIsInput);
-  outputText.classList.toggle('tulu-font', useTuluFont && tuluIsOutput);
 }
+zwnjCheck.addEventListener('change', () => { preserveZwnj = zwnjCheck.checked; saveOptions(); doConvert(); });
+nasalCheck.addEventListener('change', () => { resolveNasals = !nasalCheck.checked; saveOptions(); doConvert(); });
+fontCheck.addEventListener('change', () => { saveOptions(); applyTuluFont(); });
 
-refToggle.addEventListener('click', () => {
-  refToggle.classList.toggle('open');
-  refGrid.classList.toggle('show');
+// ---- theme ----
+$('themeBtn').addEventListener('click', () => {
+  const root = document.documentElement;
+  const cur = root.getAttribute('data-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  const next = cur === 'dark' ? 'light' : 'dark';
+  root.setAttribute('data-theme', next); store('tt-theme', next);
 });
 
-updateLabels();
+// ---- quick reference: add a glyph column, add filtering ----
+(function buildReference() {
+  document.querySelectorAll('.ref-table tr').forEach((tr) => {
+    const first = tr.cells[0];
+    if (!first) return;
+    const g = document.createElement('td');
+    g.className = 'g';
+    const keys = first.textContent.trim();
+    if (keys && keys.indexOf('[') === -1) g.textContent = keys;
+    first.after(g);
+  });
+  const search = $('refSearch'), empty = $('refEmpty');
+  search.addEventListener('input', () => {
+    const q = search.value.trim().toLowerCase();
+    let anyCard = false;
+    document.querySelectorAll('#refGrid .ref-card').forEach((card) => {
+      let any = false;
+      card.querySelectorAll('.ref-table tr').forEach((tr) => {
+        const hit = !q || tr.textContent.toLowerCase().indexOf(q) !== -1;
+        tr.classList.toggle('hidden', !hit);
+        if (hit) any = true;
+      });
+      card.classList.toggle('hidden', !any);
+      if (any) anyCard = true;
+    });
+    empty.classList.toggle('hidden', anyCard);
+  });
+})();
 
-// Populate placeholder based on direction
-const PLACEHOLDERS = {
-  'tulu-iast': 'mr, karAX, DmfZAkAX…',
-  'iast-tulu': 'mara, dharma, namaḥ…',
-  'tulu-deva': 'Type Mallige-encoded text…',
-  'deva-tulu': 'Type Devanāgarī text…',
-  'tulu-kan':  'Type Mallige-encoded text…',
-  'kan-tulu':  'Type Kannaḍa text…',
-  'tulu-mal':  'Type Mallige-encoded text…',
-  'mal-tulu':  'Type Malayāḷam text…',
-};
-function updatePlaceholder() {
-  inputText.placeholder = PLACEHOLDERS[currentDir] || 'Type here…';
-}
-dirBtns.forEach(b => b.addEventListener('click', updatePlaceholder));
-updatePlaceholder();
+// ---- start ----
+loadOptions();
+restoreFromHash();
+refresh();
+// A link pasted into an already open tab only changes the hash, so listen for that too.
+window.addEventListener('hashchange', () => { restoreFromHash(); refresh(); });
+
 </script>
 </body>
 </html>
