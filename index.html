@@ -82,7 +82,7 @@ main{max-width:1100px;margin:0 auto;padding:0 clamp(16px,4vw,40px) 60px}
 textarea,.out{flex:1;width:100%;border:0;background:transparent;color:var(--ink);padding:14px;font:400 20px/1.7 var(--sans);resize:vertical;min-height:170px;outline:0;overflow:auto;white-space:pre-wrap;word-break:break-word}
 .out.large-script{font-size:26px}
 .tulu-font{font-family:'Mallige',var(--sans)!important;font-size:30px!important;line-height:1.5!important}
-textarea::placeholder{color:var(--muted);opacity:.8}
+textarea::placeholder{color:var(--muted);opacity:.5}
 .count{padding:6px 14px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);text-align:right}
 
 
@@ -1237,13 +1237,13 @@ const TULU_SUB  = 'Mallige font encoding';
 const VALID_DIRS = new Set(['tulu-iast','iast-tulu','tulu-deva','deva-tulu','tulu-kan','kan-tulu','tulu-mal','mal-tulu']);
 
 const PLACEHOLDERS = {
-  'tulu-iast': 'Type AccTantra text',
+  'tulu-iast': 'tuLuqAX berel',
   'iast-tulu': 'Type IAST text',
-  'tulu-deva': 'Type AccTantra text',
+  'tulu-deva': 'tuLuqAX berel',
   'deva-tulu': 'Type Devanāgarī text',
-  'tulu-kan':  'Type AccTantra text',
+  'tulu-kan':  'tuLuqAX berel',
   'kan-tulu':  'Type Kannaḍa text',
-  'tulu-mal':  'Type AccTantra text',
+  'tulu-mal':  'tuLuqAX berel',
   'mal-tulu':  'Type Malayāḷam text',
 };
 
@@ -1261,9 +1261,6 @@ let script = 'iast';
 let fromTulu = false;            // the default direction is IAST → AccTantra
 let debounceTimer = null, hashTimer = null;
 
-// Starting text for the left box whenever the direction is AccTantra → something and the box is empty.
-const SAMPLE_TULU = 'tuLuqAX berel';
-function seedSample() { if (fromTulu && !inputText.value) inputText.value = SAMPLE_TULU; }
 
 const currentDir = () => (fromTulu ? 'tulu-' + script : script + '-tulu');
 const plural = (n) => n + (n === 1 ? ' character' : ' characters');
@@ -1313,7 +1310,6 @@ swapBtn.addEventListener('click', () => {
   const carried = outputText.textContent;
   fromTulu = !fromTulu;
   inputText.value = carried;
-  seedSample();
   refresh(); scheduleHash(); inputText.focus();
 });
 
@@ -1437,10 +1433,9 @@ $('themeBtn').addEventListener('click', () => {
 // ---- start ----
 loadOptions();
 restoreFromHash();
-seedSample();
 refresh();
 // A link pasted into an already open tab only changes the hash, so listen for that too.
-window.addEventListener('hashchange', () => { restoreFromHash(); seedSample(); refresh(); });
+window.addEventListener('hashchange', () => { restoreFromHash(); refresh(); });
 // Some browsers put back the previous text after a reload without firing an input event,
 // which left the counters at 0 and the output empty. Convert again once the page has settled.
 window.addEventListener('load', doConvert);
